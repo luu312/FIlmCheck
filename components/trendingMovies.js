@@ -12,12 +12,13 @@ import { image500 } from "../api/moviedb";
 
 var { width, height } = Dimensions.get("window");
 
-export default function TrendingMovies({ data }) {
+export default function TrendingMovies({ data, userId }) {
   const navigation = useNavigation();
 
   const handleClick = (item) => {
-    navigation.navigate("Movie", item);
+    navigation.navigate("Movie", { movie: item, userId });
   };
+
   return (
     <View className="mb-8">
       <Text className="text-white text-xl mx-4 mb-5">Trending</Text>

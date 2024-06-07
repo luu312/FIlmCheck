@@ -14,7 +14,6 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    // Logika logowania
     const { data: userProfile, error } = await supabase
       .from("profiles")
       .select("id, username, password")
@@ -31,7 +30,8 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    navigation.navigate("Home");
+    // Przechowaj ID użytkownika w lokalnym stanie lub w jakimś kontekście globalnym
+    navigation.navigate("Home", { userId: userProfile.id });
   };
 
   return (
@@ -58,7 +58,7 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.orText}>or</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("Home", { userId: null })}
       >
         <Text style={styles.buttonText}>Login as a guest</Text>
       </TouchableOpacity>

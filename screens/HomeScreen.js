@@ -25,12 +25,13 @@ import { styles } from "../theme";
 
 const ios = Platform.OS === "ios";
 
-export default function HomeScreen() {
+export default function HomeScreen({ route }) {
   const [trending, setTrending] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [topRated, setTopRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+  const userId = route.params?.userId || null;  // Pobierz userId z parametrów nawigacji
 
   useEffect(() => {
     getTrendingMovies();
@@ -44,20 +45,25 @@ export default function HomeScreen() {
     if (data && data.results) setTrending(data.results);
     setLoading(false);
   };
+
   const getUpcomingMovies = async () => {
     const data = await fetchUpcomingMovies();
     console.log("got upcoming", data.results.length);
     if (data && data.results) setUpcoming(data.results);
   };
+
   const getTopRatedMovies = async () => {
     const data = await fetchTopRatedMovies();
     console.log("got top rated", data.results.length);
     if (data && data.results) setTopRated(data.results);
   };
 
+  const handleMoviePress = (movie) => {
+    navigation.navigate('Movie', { movie, userId });
+  };
+
   return (
     <View className="flex-1 bg-neutral-800">
-      {/* search bar */}
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
@@ -77,17 +83,16 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
         >
-          {/* Trending Movies Carousel */}
-          {trending.length > 0 && <TrendingMovies data={trending} />}
-
-          {/* upcoming movies row */}
-          {upcoming.length > 0 && (
-            <MovieList title="Upcoming" data={upcoming} />
+          {trending.length > 0 && (
+            <TrendingMovies data={trending} userId={userId} />
           )}
 
-          {/* top rated movies row */}
+          {upcoming.length > 0 && (
+            <MovieList title="Upcoming" data={upcoming} userId={userId} />
+          )}
+
           {topRated.length > 0 && (
-            <MovieList title="Top Rated" data={topRated} />
+            <MovieList title="Top Rated" data={topRated} userId={userId} />
           )}
         </ScrollView>
       )}
